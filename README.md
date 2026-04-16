@@ -1,116 +1,86 @@
-# Full Stack To-Do Application
+# TaskFlow — Full Stack To-Do App
 
-A production-ready MVP To-Do app built with Node.js, Express, MongoDB, React, and JWT authentication.
-
----
-
-## Project Structure
-
-```
-todo-app/
-├── backend/
-│   ├── config/
-│   │   └── db.js                  # MongoDB connection
-│   ├── controllers/
-│   │   ├── authController.js      # Register / Login logic
-│   │   └── taskController.js      # CRUD task logic
-│   ├── middleware/
-│   │   ├── authMiddleware.js      # JWT verification
-│   │   ├── errorMiddleware.js     # Global error handler
-│   │   └── uploadMiddleware.js    # Multer file upload config
-│   ├── models/
-│   │   ├── User.js                # User schema (bcrypt hashing)
-│   │   └── Task.js                # Task schema
-│   ├── routes/
-│   │   ├── authRoutes.js          # POST /api/auth/register|login
-│   │   └── taskRoutes.js          # CRUD /api/tasks
-│   ├── uploads/                   # Uploaded files stored here
-│   ├── .env                       # Environment variables (not committed)
-│   ├── .env.example               # Sample env file
-│   ├── package.json
-│   └── server.js                  # Express app entry point
-│
-├── frontend/
-│   ├── public/
-│   │   └── index.html
-│   ├── src/
-│   │   ├── api/
-│   │   │   └── axios.js           # Axios instance with JWT interceptor
-│   │   ├── components/
-│   │   │   ├── Navbar.js          # Top navigation bar
-│   │   │   ├── TaskCard.js        # Individual task (view + edit inline)
-│   │   │   └── TaskForm.js        # New task creation form
-│   │   ├── pages/
-│   │   │   ├── Login.js           # Login page
-│   │   │   ├── Register.js        # Register page
-│   │   │   └── Dashboard.js       # Main task dashboard
-│   │   ├── App.js                 # Router + private route guard
-│   │   ├── index.js               # React entry point
-│   │   └── index.css              # All styles
-│   └── package.json
-│
-└── README.md
-```
+A clean, minimal task management app built with the MERN stack. Register an account, create tasks, attach files, and stay organized.
 
 ---
 
-## Setup Instructions
+## Tech Stack
 
-### Prerequisites
+**Backend**
+- Node.js + Express.js
+- MongoDB + Mongoose
+- JWT Authentication
+- Multer (file uploads)
+- bcryptjs (password hashing)
 
-- Node.js v18+ installed
-- MongoDB running locally **or** a MongoDB Atlas account
-- npm or yarn
+**Frontend**
+- React.js (functional components + hooks)
+- Axios (HTTP client)
+- React Router v6
+- Plain CSS
 
 ---
 
-### 1. Clone the Repository
+## Getting Started
+
+### What you need installed
+- [Node.js](https://nodejs.org) v18 or higher
+- [MongoDB](https://www.mongodb.com) locally **or** a free MongoDB Atlas account
+
+---
+
+### Step 1 — Get the code
 
 ```bash
-git clone <your-repo-url>
-cd todo-app
+git clone https://github.com/your-username/taskflow.git
+cd taskflow
 ```
 
 ---
 
-### 2. Backend Setup
+### Step 2 — Configure the backend
 
 ```bash
 cd backend
 npm install
 ```
 
-Create a `.env` file (copy from the example):
+Create your environment file:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your values:
+Open `.env` and fill in your values:
 
-```env
+```
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/todo_app
-JWT_SECRET=replace_with_a_long_random_secret
+MONGO_URI=your_mongodb_connection_string_here
+JWT_SECRET=your_random_secret_here
 ```
 
-Start the backend:
+> To generate a strong JWT secret, run:
+> ```bash
+> node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+> ```
+
+Start the server:
 
 ```bash
-# Development (auto-restarts on file changes)
 npm run dev
-
-# Production
-npm start
 ```
 
-The API will run at `http://localhost:5000`.
+You should see:
+```
+Server running on port 5000
+MongoDB connected: ...
+```
 
 ---
 
-### 3. Frontend Setup
+### Step 3 — Configure the frontend
 
-Open a new terminal:
+Open a second terminal:
 
 ```bash
 cd frontend
@@ -118,158 +88,206 @@ npm install
 npm start
 ```
 
-The React app will open at `http://localhost:3000` and proxy API calls to `http://localhost:5000`.
+App opens at `http://localhost:3000`. API calls are proxied to `http://localhost:5000`.
 
 ---
 
-### 4. MongoDB Setup
+## MongoDB Connection String
 
-#### Option A — Local MongoDB
+### Using MongoDB Atlas (recommended)
 
-Install MongoDB Community Edition from https://www.mongodb.com/try/download/community and start it:
-
-```bash
-mongod --dbpath /data/db
-```
-
-Use this connection string in `.env`:
-
-```
-MONGO_URI=mongodb://localhost:27017/todo_app
-```
-
-#### Option B — MongoDB Atlas (Cloud, Free Tier)
-
-1. Go to https://cloud.mongodb.com and create a free account.
-2. Create a free **M0** cluster.
-3. Under **Database Access**, add a user with a password.
-4. Under **Network Access**, allow your IP (or `0.0.0.0/0` for development).
-5. Click **Connect → Drivers** and copy the connection string.
-6. Paste it into `.env`:
+1. Sign up at [cloud.mongodb.com](https://cloud.mongodb.com)
+2. Create a free **M0** cluster
+3. Go to **Database Access** → add a user with a password
+4. Go to **Network Access** → add your IP (or `0.0.0.0/0` for dev)
+5. Click **Connect** → **Drivers** → copy the connection string
+6. Replace `<password>` with your actual password and add a DB name:
 
 ```
-MONGO_URI=mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/todo_app?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/taskflow?retryWrites=true&w=majority
+```
+
+### Using Local MongoDB
+
+Make sure `mongod` is running, then use:
+
+```
+MONGO_URI=mongodb://localhost:27017/taskflow
 ```
 
 ---
 
-## Environment Variables
+## Folder Structure
 
-| Variable     | Description                              | Example                                    |
-|--------------|------------------------------------------|--------------------------------------------|
-| `PORT`       | Port the backend server listens on       | `5000`                                     |
-| `MONGO_URI`  | MongoDB connection string                | `mongodb://localhost:27017/todo_app`        |
-| `JWT_SECRET` | Secret key for signing JWTs             | `my_super_secret_key_123`                  |
-
-> **Security note:** Never commit `.env` to version control. Add it to `.gitignore`.
-
----
-
-## API Reference
-
-### Auth Routes
-
-| Method | Endpoint              | Description       | Auth Required |
-|--------|-----------------------|-------------------|---------------|
-| POST   | `/api/auth/register`  | Register new user | No            |
-| POST   | `/api/auth/login`     | Login user        | No            |
-
-**Register body:**
-```json
-{ "name": "Alice", "email": "alice@example.com", "password": "secret123" }
+```
+taskflow/
+│
+├── backend/
+│   ├── config/
+│   │   └── db.js                   # Database connection
+│   ├── controllers/
+│   │   ├── authController.js       # Register + Login
+│   │   └── taskController.js       # Task CRUD
+│   ├── middleware/
+│   │   ├── authMiddleware.js       # JWT token guard
+│   │   ├── errorMiddleware.js      # Global error handler
+│   │   └── uploadMiddleware.js     # Multer configuration
+│   ├── models/
+│   │   ├── User.js                 # User schema
+│   │   └── Task.js                 # Task schema
+│   ├── routes/
+│   │   ├── authRoutes.js           # /api/auth/*
+│   │   └── taskRoutes.js           # /api/tasks/*
+│   ├── uploads/                    # Stored file attachments
+│   ├── .env.example                # Environment variable template
+│   ├── package.json
+│   └── server.js                   # App entry point
+│
+├── frontend/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── api/
+│   │   │   └── axios.js            # Axios instance + interceptors
+│   │   ├── components/
+│   │   │   ├── Navbar.js
+│   │   │   ├── TaskCard.js
+│   │   │   └── TaskForm.js
+│   │   ├── pages/
+│   │   │   ├── Login.js
+│   │   │   ├── Register.js
+│   │   │   └── Dashboard.js
+│   │   ├── App.js                  # Routes + PrivateRoute
+│   │   ├── index.js
+│   │   └── index.css
+│   └── package.json
+│
+├── .gitignore
+└── README.md
 ```
 
-**Login body:**
-```json
-{ "email": "alice@example.com", "password": "secret123" }
-```
-
-Both return: `{ token, user: { id, name, email } }`
-
 ---
 
-### Task Routes
-
-All task routes require the `Authorization: Bearer <token>` header.
-
-| Method | Endpoint          | Description                    |
-|--------|-------------------|--------------------------------|
-| POST   | `/api/tasks`      | Create a task (multipart/form-data) |
-| GET    | `/api/tasks`      | Get all tasks for current user |
-| PUT    | `/api/tasks/:id`  | Update a task                  |
-| DELETE | `/api/tasks/:id`  | Delete a task                  |
-
-**Create / Update fields (form-data):**
-
-| Field        | Type   | Required | Description                        |
-|--------------|--------|----------|------------------------------------|
-| `title`      | string | Yes      | Task title                         |
-| `description`| string | No       | Task details                       |
-| `status`     | string | No       | `pending` or `completed`           |
-| `attachment` | file   | No       | Image (jpeg/png/gif) or PDF, max 5 MB |
-
----
-
-## Features Overview
+## API Endpoints
 
 ### Authentication
-- Secure registration with bcrypt password hashing (salt rounds: 10)
-- JWT tokens valid for 7 days
-- Automatic logout on token expiry (via Axios interceptor)
-- Protected routes on both backend (middleware) and frontend (PrivateRoute)
 
-### Task Management
-- Create tasks with title, description, and optional file attachment
+```
+POST   /api/auth/register     Create a new account
+POST   /api/auth/login        Login and receive a token
+```
+
+**Register request body:**
+```json
+{
+  "name": "Alice",
+  "email": "alice@example.com",
+  "password": "mypassword"
+}
+```
+
+**Login request body:**
+```json
+{
+  "email": "alice@example.com",
+  "password": "mypassword"
+}
+```
+
+Both return a JWT token and user object on success.
+
+---
+
+### Tasks
+
+All task endpoints require the header:
+```
+Authorization: Bearer <your_token>
+```
+
+```
+POST   /api/tasks             Create a task
+GET    /api/tasks             Get all your tasks
+PUT    /api/tasks/:id         Update a task
+DELETE /api/tasks/:id         Delete a task
+```
+
+Tasks are created using `multipart/form-data` to support file attachments.
+
+| Field        | Type   | Required | Notes                             |
+|--------------|--------|----------|-----------------------------------|
+| title        | string | Yes      | Max 100 characters                |
+| description  | string | No       | Max 500 characters                |
+| status       | string | No       | `pending` or `completed`          |
+| attachment   | file   | No       | JPEG, PNG, GIF, or PDF — max 5 MB |
+
+---
+
+## Features
+
+**Authentication**
+- Register with name, email, and password
+- Passwords hashed with bcrypt (10 salt rounds)
+- JWT tokens expire after 7 days
+- Automatic logout when token expires
+
+**Task Management**
+- Create tasks with a title, description, and optional file
 - View all tasks sorted by newest first
-- Edit task title, description, and replace attachment inline
-- Mark tasks as completed / revert to pending
-- Delete tasks (also removes uploaded file from disk)
+- Edit any task inline — title, description, or attachment
+- Toggle status between pending and completed
+- Delete tasks (attachment file is removed from disk too)
+
+**Dashboard**
+- Stats bar showing total, pending, and completed counts
 - Filter tasks by All / Pending / Completed
-- Task stats bar (total, pending, completed counts)
+- Loading spinner while fetching
+- Empty state messages
 
-### File Uploads
-- Handled with Multer (local disk storage)
-- Allowed types: JPEG, PNG, GIF, PDF
+**File Uploads**
+- Accepts images (JPEG, PNG, GIF) and PDF files
 - Max file size: 5 MB
-- Files stored in `backend/uploads/` with unique filenames
-- Old file automatically deleted when a new one is uploaded for the same task
-- Attachments served statically at `http://localhost:5000/uploads/<filename>`
+- Files served at `http://localhost:5000/uploads/<filename>`
+- Replacing a file automatically deletes the old one
 
 ---
 
-## Dependencies
+## Environment Variables Reference
 
-### Backend
-
-| Package       | Purpose                                      |
-|---------------|----------------------------------------------|
-| `express`     | Web framework                                |
-| `mongoose`    | MongoDB ODM                                  |
-| `bcryptjs`    | Password hashing                             |
-| `jsonwebtoken`| JWT creation and verification                |
-| `multer`      | Multipart form-data / file upload handling   |
-| `cors`        | Cross-origin resource sharing                |
-| `dotenv`      | Environment variable loading                 |
-| `nodemon`     | Auto-restart on file changes (dev only)      |
-
-### Frontend
-
-| Package           | Purpose                                  |
-|-------------------|------------------------------------------|
-| `react`           | UI library                               |
-| `react-dom`       | React DOM renderer                       |
-| `react-router-dom`| Client-side routing                      |
-| `axios`           | HTTP client with interceptors            |
-| `react-scripts`   | CRA build tooling                        |
+| Variable     | Required | Description                              |
+|--------------|----------|------------------------------------------|
+| `PORT`       | No       | Server port (default: 5000)              |
+| `MONGO_URI`  | Yes      | MongoDB connection string                |
+| `JWT_SECRET` | Yes      | Secret for signing tokens (keep private) |
 
 ---
 
-## Common Issues
+## Sample `.env`
 
-**CORS errors** — Make sure both servers are running and the frontend proxy in `package.json` points to `http://localhost:5000`.
+```env
+PORT=5000
+MONGO_URI=mongodb+srv://user:pass@cluster0.abc.mongodb.net/taskflow
+JWT_SECRET=3770559d44980d25ed0508395a71ef6f141ab8658f821dcb24571...
+```
 
-**MongoDB connection refused** — Ensure `mongod` is running, or check your Atlas connection string and network whitelist.
+---
 
-**`multer` file type error** — Only JPEG, PNG, GIF, and PDF files are accepted. Check the file extension and MIME type.
+## Troubleshooting
 
-**JWT invalid / expired** — Logging out and back in generates a fresh token. Tokens expire after 7 days.
+**Cannot connect to MongoDB**
+Check that your IP is whitelisted in Atlas Network Access, and that the username/password in the URI are correct.
+
+**401 Unauthorized on task requests**
+Your token may have expired. Log out and sign in again to get a fresh one.
+
+**File upload rejected**
+Only JPEG, PNG, GIF, and PDF files are accepted. Verify the file type and that it is under 5 MB.
+
+**Frontend shows blank page**
+Make sure both the backend (`port 5000`) and frontend (`port 3000`) servers are running at the same time.
+
+---
+
+## License
+
+MIT
